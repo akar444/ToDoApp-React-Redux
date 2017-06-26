@@ -1,10 +1,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Task from '../components/Task'
+import Task from '../components/Task';
 
 class ToDoList extends React.Component {
 	allTasks() {
-		return this.props.tasks.map((task)=> {
+		let tasks = [],
+		    activeFilter;
+		switch(this.props.activeFilter) {
+			case 'SHOW_ACTIVE':
+				tasks = this.props.tasks.filter((task)=> !task.completed)
+				break;
+			case 'SHOW_COMPLETED':
+				tasks = this.props.tasks.filter((task)=> task.completed)
+				break;
+			default:
+			    tasks = this.props.tasks;
+		}
+		return tasks.map((task)=> {
 			return <Task key={task.id} task={task} />
 		})
 	}
@@ -19,7 +31,8 @@ class ToDoList extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		tasks: state.tasks.todos
+		tasks: state.tasks.todos,
+		activeFilter: state.tasks.activeFilter
 	}
 }
 
